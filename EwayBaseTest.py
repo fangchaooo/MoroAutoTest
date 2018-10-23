@@ -2,7 +2,7 @@ import re
 import os
 import time
 import subprocess
-
+from EwayFunFileChange import SdkFileChange as sfc
 
 class EwayBotBaseTest():
 
@@ -10,20 +10,23 @@ class EwayBotBaseTest():
         self._moro = moro
         self.app_name = 'TestFun'
         self.path = ''
+        self.solution_path = ''
+        self.file_change = sfc()
 
     def create_app(self):
         cmd = 'emake -t fapp -n ' + self.app_name + ' -i 127.0.0.1'
         sp = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
         time.sleep(10)
-        self.path = os.getcwd()
+        self.solution_path = os.getcwd() + '/' +self.app_name
+        self.path = self.solution_path + '/' +self.app_name
 
     def code_write(self, step, text=None):
         if step == 'INITIALIZE':
-            self.insert_to_file(24, text, '.cpp')
+            self.file_change.insert_line_to_file(self.path+'.cpp', 24, text)
         elif step == 'JOBSTART':
-            self.insert_to_file(38, text, '.cpp')
+            self.file_change.insert_line_to_file(self.path + '.cpp', 38, text)
         elif step == 'CHECKMSGCODE':
-            self.insert_to_file(32, text, '.cpp')
+            self.file_change.insert_line_to_file(self.path + '.cpp', 32, text)
         elif step == 'ProcRobPos':
             proc_robot_pos_init_text = "vFeatureList.push_back(SysCom_ID_LMsg_RobPos);"
             proc_robot_pos_htext = "virtual eint ProcRobPos(edouble dTimeStamp, CBotPosMessage *piRobPos);"
@@ -32,30 +35,27 @@ class EwayBotBaseTest():
                                      "\n" \
                                      "\n" \
                                      "}"
-            self.insert_to_file(19, proc_robot_pos_htext, '.h')
-            self.insert_to_file(24,proc_robot_pos_init_text, '.cpp')
-            self.append_to_file(proc_robot_pos_cpptext, '.cpp')
+            self.file_change.insert_line_to_file(self.path + '.h', 19, proc_robot_pos_htext)
+            self.file_change.insert_line_to_file(self.path + '.cpp', 24, proc_robot_pos_init_text)
+            self.file_change.append_to_file(self.path+'.cpp', proc_robot_pos_cpptext)
         elif step == "PROCROBPOS":
-            self.insert_to_file(55, text, '.cpp')
-        elif step == "SETIMER":
-            self.insert_to_file()
+            mark = "::ProcRobPos(edouble dTimeStamp, CBotPosMessage *piRobPos)"
+            self.file_change.search_insert_line_to_file(self.path+'.cpp', mark, text)
+        elif step == "ProcHeadPos":
+            proc_head_pos_init_text = "vFeatureList.push_back(SysCom_ID_LMsg_HeadPos);"
+            proc_head_pos_htext = "virtual eint ProcHeadPos(edouble dTimeStamp, CHeadPosMessage *piHeadPos);"
+            proc_head_pos_cpptext = "eint " + self.app_name + "::ProcHeadPos(edouble dTimeStamp, CHeadPosMessage *piHeadPos)\n" \
+                                     "{" \
+                                     "\n" \
+                                     "\n" \
+                                     "}"
+            self.file_change.insert_line_to_file(self.path + '.h', 19, proc_head_pos_htext)
+            self.file_change.insert_line_to_file(self.path + '.cpp', 24, proc_head_pos_init_text)
+            self.file_change.append_to_file(self.path + '.cpp', proc_head_pos_cpptext)
+        elif step == "PROCHEADPOS":
+            mark = "ProcHeadPos(edouble dTimeStamp, CHeadPosMessage *piHeadPos)"
+            self.file_change.search_insert_line_to_file(self.path + '.cpp', mark, text)
 
-    def insert_to_file(self, new_line, code, file_type):
-        path = self.app_name + '/' + self.app_name + file_type
-        fp = open(path)
-        s = fp.read()
-        fp.close()
-        a = s.split('\n')
-        a.insert(new_line, code)
-        s = '\n'.join(a)
-        fp =open(path, 'w')
-        fp.write(s)
-        fp.close()
-
-    def append_to_file(self, code, file_type):
-        path = self.app_name + '/' + self.app_name + file_type
-        with open(path, 'a+') as f:
-            f.write(code)
 
     def start_simulation(self):
         cmd = 'emake -s ' + self._moro
@@ -71,7 +71,7 @@ class EwayBotBaseTest():
     def close_simulation(self):
         os.system('emake -q')
         cmd_pkill_fun = 'pkill '+ self.app_name
-        cmd_delete_folder = 'rm -rf ' + self.path + '/' + self.app_name
+        cmd_delete_folder = 'rm -rf ' + self.solution_path
         os.system(cmd_pkill_fun)
         os.system(cmd_delete_folder)
 

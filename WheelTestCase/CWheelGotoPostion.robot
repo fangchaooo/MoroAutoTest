@@ -2,7 +2,7 @@
 Documentation       Example test case for ewayos CWheelGotoPosition using Gazebo
 Test Setup          Start Simulation and Create App
 Test Teardown       Close Simulation
-Library             /home/moro/EwayTest/WheelTest.py
+Library             /home/moro/EwayTest/Test.py
 
 
 *** variables ***
