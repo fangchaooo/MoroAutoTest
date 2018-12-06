@@ -1,8 +1,8 @@
 *** settings ***
-Documentation       Example test case for ewayos CWheelGotoPosition using Gazebo
+Documentation       Example test case for ewayos CArmGripper using Gazebo
 Test Setup          Start Simulation and Create App
 Test Teardown       Close Simulation
-Library             /home/moro/EwayTest/Test.py
+Library             ../Test.py
 
 
 *** variables ***

@@ -3,6 +3,8 @@ import os
 import time
 import subprocess
 from EwayFunFileChange import SdkFileChange as sfc
+from EwayJudge import Judge
+
 
 class EwayBotBaseTest():
 
@@ -56,7 +58,6 @@ class EwayBotBaseTest():
             mark = "ProcHeadPos(edouble dTimeStamp, CHeadPosMessage *piHeadPos)"
             self.file_change.search_insert_line_to_file(self.path + '.cpp', mark, text)
 
-
     def start_simulation(self):
         cmd = 'emake -s ' + self._moro
         sp = subprocess.Popen(cmd, shell=True)
@@ -72,16 +73,21 @@ class EwayBotBaseTest():
         os.system('emake -q')
         cmd_pkill_fun = 'pkill '+ self.app_name
         cmd_delete_folder = 'rm -rf ' + self.solution_path
+        cmd_delete_robot_pos = 'rm -rf /home/moro/MoroPosition'
         os.system(cmd_pkill_fun)
         os.system(cmd_delete_folder)
+        os.system(cmd_delete_robot_pos)
 
-    def _result(self):
+    def _result(self, who):
+        j = Judge()
         try:
-            """
-            ToDo: get robot pos
-            """
-            return 'x=1 y=2 theta=0.3'
-        except SyntaxError:
-            raise EwayBotBaseTest('Invalid expression.')
-        except ZeroDivisionError:
-            raise EwayBotBaseTest('Division by zero.')
+            if who == "head":
+                return j.head_motion
+            elif who == "arm":
+                return j.arm_motion
+            elif who == "wheel":
+                return j.wheel_motion
+        except BaseException:
+            raise BaseException('The input para error!')
+
+

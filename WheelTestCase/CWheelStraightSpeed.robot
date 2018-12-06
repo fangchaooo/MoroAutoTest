@@ -10,12 +10,11 @@ ${Job_start}=           CWheelStraightSpeedCmd iStraightSpeed;\n
 ...                     iStraightSpeed.m_fSpeed = 0.3;\n
 ...                     eint nRetCode = SendWheelStraightSpeed (&iStraightSpeed);
 
-
 *** Test Cases ***
 CWheelGotoPositon
     Sleep                    20s
     Add Limb
     Add job start code       ${Job_start}
     Run                      True
-    Sleep                    2 minutes 10 seconds
+    Sleep                    1 minutes 30 seconds
     Result should be         x=1 y=2 theta=0.3

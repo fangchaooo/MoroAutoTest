@@ -6,6 +6,9 @@ name = "pypi"
 [packages]
 robotframework = "*"
 pipfile = "*"
+numpy = "*"
+scipy = "*"
+matplotlib = "*"
 
 [dev-packages]
 

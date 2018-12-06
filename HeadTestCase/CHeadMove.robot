@@ -1,8 +1,8 @@
 *** settings ***
-Documentation       Example test case for ewayos CWheelGotoPosition using Gazebo
+Documentation       Example test case for ewayos CHeadMove using Gazebo
 Test Setup          Start Simulation and Create App
 Test Teardown       Close Simulation
-Library             /home/moro/EwayTest/Test.py
+Library             ../Test.py
 
 
 *** variables ***
@@ -15,10 +15,10 @@ ${Job_start}=        CHeadMoveCmd icmd; 	\n
 
 
 *** Test Cases ***
-CWheelGotoPositon
+HeadMove
     Sleep                    20s
     Add Limb
     Add job start code       ${Job_start}
     Run                      True
-    Sleep                    2 minutes
-    Result should be         x=1 y=2 theta=0.3
+    Sleep                    30 seconds
+    Result should be         head RY=0.5 RZ=0.5

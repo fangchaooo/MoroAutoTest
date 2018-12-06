@@ -1,8 +1,8 @@
 *** settings ***
 Documentation       Example test case for ewayos CWheelGotoPosition using Gazebo
-Test Setup          Start Simulation and Create App
+Test Setup          start simulation and create app
 Test Teardown       Close Simulation
-Library             /home/moro/EwayTest/Test.py
+Library             ../Test.py
 
 
 *** variables ***
@@ -10,14 +10,15 @@ ${Job_start}=         CWheelGoToPositionCmd icmd;\n
 ...                   icmd.m_fRelativeX = 1;\n
 ...                   icmd.m_fRelativeY = 2;\n
 ...                   icmd.m_fRelativeTheta = 0.3;\n
+...                   icmd.m_fSpeed = 0.5;\n
 ...                   SendWheelGoToPosition(&icmd);
 
 
 *** Test Cases ***
 CWheelGotoPositon
-    Sleep                    20s
+    Sleep                    10s
     Add Limb
     Add job start code       ${Job_start}
     Run                      True
-    Sleep                    2 minutes 10 seconds
-    Result should be         x=1 y=2 theta=0.3
+    Sleep                    30 seconds
+    Result should be         wheel x=1 y=2 theta=0.3
